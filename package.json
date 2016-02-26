@@ -1,10 +1,10 @@
 {
-  "name": "node-erratum",
+  "name": "erratum",
   "version": "0.0.1",
-  "description": "A simple wrapper for native Error classes with string formatting and additional data",
+  "description": "A simple Error factory with support for string formatting and additional data",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "node test.js"
   },
   "author": "Jacopo Scazzosi <me@jacoscaz.com>",
   "license": "MIT"
