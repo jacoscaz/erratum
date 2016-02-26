@@ -2,7 +2,7 @@
 Erratum
 =======
 
-Erratum is a simple `Error` factory withsupport for string formatting 
+Erratum is a simple `Error` factory with support for string formatting 
 and additional properties.
 
 API
