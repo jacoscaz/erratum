@@ -1,6 +1,6 @@
 {
   "name": "erratum",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A simple Error factory with support for string formatting and additional data",
   "main": "index.js",
   "scripts": {
