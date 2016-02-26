@@ -1,10 +1,17 @@
 {
   "name": "erratum",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A simple Error factory with support for string formatting and additional data",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jacoscaz/node-erratum"
+  },
+  "bugs": {
+    "url": "https://github.com/jacoscaz/node-erratum/issues"
   },
   "author": "Jacopo Scazzosi <me@jacoscaz.com>",
   "license": "MIT"
