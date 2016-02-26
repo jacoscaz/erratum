@@ -2,8 +2,8 @@
 Erratum
 =======
 
-Erratum is a simple factory function for `Error` and the other native 
-error classes that supports string formatting and additional properties.
+Erratum is a simple `Error` factory withsupport for string formatting 
+and additional properties.
 
 API
 ---
@@ -22,7 +22,7 @@ call the included `wrap` function.
     var erratum = require('erratum');
     var typeErratum = erratum.wrap(TypeError);
     
-    typeErratum('The answer it always %s.', 42);
+    typeErratum('The answer is always %s.', 42);
     
 Test
 ----
