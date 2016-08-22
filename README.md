@@ -41,7 +41,7 @@ The `Erratum` function supports extension through child classes. These will inhe
     
     util.inherits(ExtendedErratum, Erratum);
     
-    var err = ExtendedErratum({statusCode: 500}, 'The answer is: %s', 42);
+    var err = new ExtendedErratum({statusCode: 500}, 'The answer is: %s', 42);
         
     err instanceof Error                   // true
     err instanceof Erratum                 // true
