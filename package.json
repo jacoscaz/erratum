@@ -1,10 +1,10 @@
 {
   "name": "erratum",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "A simple Error factory with support for string formatting and additional data",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -14,5 +14,10 @@
     "url": "https://github.com/jacoscaz/node-erratum/issues"
   },
   "author": "Jacopo Scazzosi <me@jacoscaz.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^3.0.2",
+    "should": "^11.1.0"
+  }
 }
