@@ -27,18 +27,42 @@ function Erratum() {
     return new (Erratum.bind.apply(Erratum, args));
   }
 
-  Error.captureStackTrace(this, this.constructor);
-
   var data = isObject(args[0]) && args[0];
 
   if (data) {
+
     args.shift();
+
+    if (data instanceof Error) {
+      data = {wrappedError: data};
+    }
+
+    if (data.err) {
+      data.wrappedError = data.err;
+      delete data.err;
+    }
+
+    if (data.error) {
+      data.wrappedError = data.error;
+      delete data.error;
+    }
+
     extend(this, data);
   }
 
   this.name = this.constructor.name;
   this.message = util.format.apply(util, args) + '';
+  Error.captureStackTrace(this, this.constructor);
+
+  if (this.wrappedError instanceof Error) {
+    this.stack += '\nCaused By: ' + this.wrappedError.stack;
+  }
+
 }
+
+Erratum.setStackTraceLimit = function(limit) {
+  Error.stackTraceLimit = limit;
+};
 
 util.inherits(Erratum, Error);
 
