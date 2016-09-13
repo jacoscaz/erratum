@@ -50,6 +50,41 @@ The `Erratum` function supports extension through child classes. These will inhe
     err.message === 'This answer is: 42';  // true
     
 Check the tests in `test/main.js` for more examples.
+
+### Error wrapping
+
+If `data` is an instance of `Error` or has either the `err` property
+or the `error` property set to an instance of `Error`, the stack of the 
+new error returned by `Erratum()` will incorporate the stack of the 
+provided error. The latter will be available at `Erratum#wrapperError`.
+ 
+```
+> var someError = new Error('Something went wrong.');
+> throw new Erratum({err: someError}, 'Yes, something definitely went wrong.');
+
+Erratum: Yes, something definitely went wrong.
+    at repl:1:7
+    at REPLServer.defaultEval (repl.js:262:27)
+    at bound (domain.js:287:14)
+    at REPLServer.runBound [as eval] (domain.js:300:12)
+    at REPLServer.<anonymous> (repl.js:431:12)
+    at emitOne (events.js:82:20)
+    at REPLServer.emit (events.js:169:7)
+    at REPLServer.Interface._onLine (readline.js:211:10)
+    at REPLServer.Interface._line (readline.js:550:8)
+    at REPLServer.Interface._ttyWrite (readline.js:827:14)
+Caused By: Error: Something went wrong.
+    at repl:1:17
+    at REPLServer.defaultEval (repl.js:262:27)
+    at bound (domain.js:287:14)
+    at REPLServer.runBound [as eval] (domain.js:300:12)
+    at REPLServer.<anonymous> (repl.js:431:12)
+    at emitOne (events.js:82:20)
+    at REPLServer.emit (events.js:169:7)
+    at REPLServer.Interface._onLine (readline.js:211:10)
+    at REPLServer.Interface._line (readline.js:550:8)
+    at REPLServer.Interface._ttyWrite (readline.js:827:14)
+```
     
 Test
 ----
