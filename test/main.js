@@ -59,4 +59,25 @@ describe('Erratum', function() {
     error.obj.should.equal(data.obj);
   });
 
+  it('should support error subclasses correctly [extend]', function() {
+    var ExtendedErratumA = Erratum.extend();
+    var ExtendedErratumB = ExtendedErratumA.extend();
+    var data = {num: 17, obj: {}};
+    var errorA = new ExtendedErratumA(data, '%s: %s', 'Answer', 42);
+    var errorB = new ExtendedErratumB(data, '%s: %s', 'Answer', 42);
+    errorA.should.be.instanceof(Error);
+    errorA.should.be.instanceof(Erratum);
+    errorA.should.be.instanceof(ExtendedErratumA);
+    errorA.message.should.equal('Answer: 42');
+    errorA.num.should.equal(17);
+    errorA.obj.should.equal(data.obj);
+    errorB.should.be.instanceof(Error);
+    errorB.should.be.instanceof(Erratum);
+    errorB.should.be.instanceof(ExtendedErratumA);
+    errorB.should.be.instanceof(ExtendedErratumB);
+    errorB.message.should.equal('Answer: 42');
+    errorB.num.should.equal(17);
+    errorB.obj.should.equal(data.obj);
+  });
+
 });

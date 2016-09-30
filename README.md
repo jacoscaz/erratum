@@ -48,7 +48,22 @@ The `Erratum` function supports extension through child classes. These will inhe
     err instanceof ExtendedErratum         // true
     err.statusCode === 500                 // true
     err.message === 'This answer is: 42';  // true
+
+Subclassing is also supported through the static `.extend()` method:
+
+    var ExtendedErratum = Erratum.extend();
     
+    var err = new ExtendedErratum({statusCode: 500}, 'The answer is: %s', 42);
+        
+    err instanceof Error                   // true
+    err instanceof Erratum                 // true
+    err instanceof ExtendedErratum         // true
+    err.statusCode === 500                 // true
+    err.message === 'This answer is: 42';  // true
+
+The implementation of the `extend()` method follows `Backbone.js`' own
+implementation of such feature. 
+
 Check the tests in `test/main.js` for more examples.
 
 ### Error wrapping
