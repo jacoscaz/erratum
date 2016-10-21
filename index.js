@@ -1,8 +1,12 @@
 
-var util = require('util');
+'use strict';
 
 function isFunction(f) {
   return typeof(f) === 'function';
+}
+
+function isString(s) {
+  return typeof(s) === 'string';
 }
 
 function isObject(o) {
@@ -23,6 +27,30 @@ function extend(target) {
   return target;
 }
 
+function inherits(Child, Parent) {
+  Child.super_ = Parent;
+  Child.prototype = Object.create(Parent.prototype, {
+    constructor: {
+      value: Child,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+}
+
+/**
+ * Taken from the fast-format module by KnowledgeCode
+ * https://github.com/knowledgecode/fast-format/blob/master/fast-format.js
+ */
+function format(string) {
+  var i, len, argc = arguments.length, v = (string + '').split('%s'), r = argc ? v[0] : '';
+  for (i = 1, len = v.length, argc--; i < len; i++) {
+    r += (i > argc ? '%s' : arguments[i]) + v[i];
+  }
+  return r;
+}
+
 function Erratum() {
 
   var args = Array.prototype.slice.call(arguments, 0);
@@ -31,6 +59,8 @@ function Erratum() {
     args.unshift(null);
     return new (Erratum.bind.apply(Erratum, args));
   }
+
+  var constructor = this.constructor;
 
   var data = isObject(args[0]) && args[0];
 
@@ -55,10 +85,11 @@ function Erratum() {
     extend(this, data);
   }
 
-  this.name = this.constructor.name;
-  this.message = util.format.apply(util, args) + '';
+  this.name = constructor.name;
+  this.message = format.apply(null, args) + '';
+  this.constructor = constructor;
 
-  Error.captureStackTrace(this, this.constructor);
+  Error.captureStackTrace(this, constructor);
 
   if (this.wrappedError instanceof Error) {
     this.stack += '\nCaused By: ' + this.wrappedError.stack;
@@ -70,30 +101,46 @@ Erratum.setStackTraceLimit = function(limit) {
   Error.stackTraceLimit = limit;
 };
 
-Erratum.extend = function(protoProps, staticProps) {
+Erratum.extend = function(name, protoProps, staticProps) {
 
-  var parent = this;
-  var child;
+  var Parent = this;
+  var Child = null;
 
-  if (protoProps && Object.hasOwnProperty(protoProps, 'constructor')) {
-    child = protoProps.constructor;
-  } else {
-    child = function(){
-      return parent.apply(this, arguments);
-    };
+  if (!isString(name)) {
+    staticProps = protoProps;
+    protoProps = name;
+    name = null;
   }
 
-  extend(child, parent, staticProps);
+  !isObject(protoProps) && (protoProps = {});
+  !isObject(staticProps) && (staticProps = {});
 
-  child.prototype = Object.create(parent.prototype);
+  if (Object.hasOwnProperty(protoProps, 'constructor')
+    && isFunction(protoProps.constructor)) {
 
-  extend(child.prototype, protoProps);
+    Child = protoProps.constructor;
 
-  child.__super__ = parent.prototype;
+  } else {
 
-  return child;
+    Child = function () {
+      if (!(this instanceof Child)) {
+        return new (Child.bind.apply(Child, arguments));
+      }
+      Parent.apply(this, arguments);
+    };
+
+  }
+
+  name = name || Child.name || Parent.name;
+  Object.defineProperty(Child, 'name', {value: name});
+
+  extend(Child, Parent, staticProps);
+  inherits(Child, Parent);
+  extend(Child.prototype, protoProps);
+  
+  return Child;
 };
 
-util.inherits(Erratum, Error);
+inherits(Erratum, Error);
 
 module.exports = Erratum;
