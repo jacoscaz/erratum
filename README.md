@@ -4,15 +4,10 @@ Erratum
 
 Erratum is a simple extension of the native Error class supporting string formatting, additional properties and further subclassing.
 
-Breaking changes
-----------------
-
-Erratum has been rewritten with the `1.x` release, extending the native `Error` class to better support error specialization.  
-
-While the basic `erratum()` API remains unchanged, versions `1.x` do not have the `erratum.wrap` feature anymore.
-
 API
 ---
+
+### new Erratum()
 
 The API is comprised of only one function: `Erratum([data], message, [args...])`. It can be used both as a factory function and as a constructor and always returns an `Erratum` instance.
 
@@ -32,6 +27,8 @@ Here's a quick example:
     err.statusCode === 500                 // true
     err.message === 'This answer is: 42';  // true
 
+### Extending Erratum - inheritance
+
 The `Erratum` function supports extension through child classes. These will inherit all `Erratum` features.  
 
     function ExtendedErratum() {
@@ -49,6 +46,8 @@ The `Erratum` function supports extension through child classes. These will inhe
     err.statusCode === 500                 // true
     err.message === 'This answer is: 42';  // true
 
+### Extending Erratum - Erratum.extend()
+
 Subclassing is also supported through the static `.extend()` method:
 
     var ExtendedErratum = Erratum.extend();
@@ -61,17 +60,9 @@ Subclassing is also supported through the static `.extend()` method:
     err.statusCode === 500                 // true
     err.message === 'This answer is: 42';  // true
 
-The implementation of the `extend()` method follows `Backbone.js`' own
-implementation of such feature. 
-
-Check the tests in `test/main.js` for more examples.
-
 ### Error wrapping
 
-If `data` is an instance of `Error` or has either the `err` property
-or the `error` property set to an instance of `Error`, the stack of the 
-new error returned by `Erratum()` will incorporate the stack of the 
-provided error. The latter will be available at `Erratum#wrapperError`.
+If `data` is an instance of `Error` or has either the `err` property or the `error` property set to an instance of `Error`, the stack of the new error returned by `Erratum()` will incorporate the stack of the provided error. The latter will be available at `Erratum#wrapperError`.
  
 ```
 > var someError = new Error('Something went wrong.');
@@ -100,6 +91,13 @@ Caused By: Error: Something went wrong.
     at REPLServer.Interface._line (readline.js:550:8)
     at REPLServer.Interface._ttyWrite (readline.js:827:14)
 ```
+
+Breaking changes
+----------------
+
+Erratum has been rewritten with the `1.x` release, extending the native `Error` class to better support error specialization.  
+
+While the basic `erratum()` API remains unchanged, versions `1.x` do not have the `erratum.wrap` feature anymore.
     
 Test
 ----
