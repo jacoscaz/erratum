@@ -101,6 +101,15 @@ Erratum.setStackTraceLimit = function(limit) {
   Error.stackTraceLimit = limit;
 };
 
+Erratum.assert = function(check) {
+  var Err = this;
+  if (!check) {
+    var args = Array.prototype.slice.call(arguments);
+    args[0] = this;
+    throw new (Err.bind.apply(Err, args));
+  }
+};
+
 Erratum.extend = function(name, protoProps, staticProps) {
 
   var Parent = this;

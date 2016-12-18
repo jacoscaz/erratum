@@ -82,4 +82,33 @@ describe('Erratum', function() {
     errorB.obj.should.equal(data.obj);
   });
 
+  it('should support simple assertions through Erratum.assert()', function () {
+    var data = {num: 17, obj: {}};
+    try {
+      Erratum.assert(false, data, '%s: %s', 'Answer', 42);
+    } catch (err) {
+      err.should.be.instanceof(Erratum);
+      err.message.should.equal('Answer: 42');
+      err.num.should.equal(data.num);
+      err.obj.should.equal(data.obj);
+      return;
+    }
+    throw new Error('Should not be here.');
+  });
+
+  it('should support simple assertions in subclasses Subclass.assert()', function () {
+    var ExtendedErratum = Erratum.extend('ExtendedErratum');
+    var data = {num: 17, obj: {}};
+    try {
+      ExtendedErratum.assert(false, data, '%s: %s', 'Answer', 42);
+    } catch (err) {
+      err.should.be.instanceof(ExtendedErratum);
+      err.message.should.equal('Answer: 42');
+      err.num.should.equal(data.num);
+      err.obj.should.equal(data.obj);
+      return;
+    }
+    throw new Error('Should not be here.');
+  });
+
 });

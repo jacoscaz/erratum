@@ -92,6 +92,24 @@ Caused By: Error: Something went wrong.
     at REPLServer.Interface._ttyWrite (readline.js:827:14)
 ```
 
+### Assertions
+
+The Erratum class and all of its child classes support simple assertions through `Erratum.assert()`.
+
+The following line
+
+```
+Erratum.assert(check(), {statusCode: 500}, 'The answer is: %s', 42);
+```
+
+is equivalent to
+
+```
+if (!check()) {
+    throw new Erratum({statusCode: 500}, 'The answer is: %s', 42);
+}
+```
+
 Breaking changes
 ----------------
 
