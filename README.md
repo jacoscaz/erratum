@@ -2,6 +2,8 @@
 Erratum
 =======
 
+[![Build Status](https://travis-ci.org/jacoscaz/node-erratum.svg?branch=master)](https://travis-ci.org/jacoscaz/node-erratum)
+
 Erratum is an extension of the native Error class that adds support for additional properties, simple assertions and can be extended as any other ES6 class.
 
 API
