@@ -2,72 +2,59 @@
 Erratum
 =======
 
-Erratum is a simple extension of the native Error class supporting string formatting, additional properties and further subclassing.
+Erratum is an extension of the native Error class that adds support for additional properties, simple assertions and can be extended as any other ES6 class.
 
 API
 ---
 
 ### new Erratum()
 
-The API is comprised of only one function: `Erratum([data], message, [args...])`. It can be used both as a factory function and as a constructor and always returns an `Erratum` instance.
+```js
+new Erratum([data], message)
+```
+Arguments: 
 
 - **data**: [optional] additional data
-- **message**: the error message, optionally with `utils.format()` formatting tags
-- **args**: [optional] formatting arguments
+- **message**: the error message
 
-Here's a quick example:
+Quick example:
 
-    var Erratum = require('erratum');
+```js
+const Erratum = require('erratum');
+const err = new Erratum({statusCode: 500}, 'The answer is: 42');
+
+err instanceof Error                   // true
+err instanceof Erratum                 // true
+err.statusCode === 500                 // true
+err.message === 'This answer is: 42';  // true
+```
+
+### Extending Erratum
+
+`Erratum` can be extended as any other ES6 class.
+
+```js
+class ExtendedErratum extends Erratum {};
+
+const err = new ExtendedErratum({statusCode: 500}, 'The answer is: 42');
     
-    var err = Erratum({statusCode: 500}, 'The %s is: %s', 'answer', 42);
-    // var err = new Erratum({statusCode: 500}, 'The %s is: %s', 'answer', 42);
-    
-    err instanceof Error                   // true
-    err instanceof Erratum                 // true
-    err.statusCode === 500                 // true
-    err.message === 'This answer is: 42';  // true
-
-### Extending Erratum - inheritance
-
-The `Erratum` function supports extension through child classes. These will inherit all `Erratum` features.  
-
-    function ExtendedErratum() {
-      Erratum.apply(this, arguments);
-      // Custom stuff goes here.
-    }
-    
-    util.inherits(ExtendedErratum, Erratum);
-    
-    var err = new ExtendedErratum({statusCode: 500}, 'The answer is: %s', 42);
-        
-    err instanceof Error                   // true
-    err instanceof Erratum                 // true
-    err instanceof ExtendedErratum         // true
-    err.statusCode === 500                 // true
-    err.message === 'This answer is: 42';  // true
-
-### Extending Erratum - Erratum.extend()
-
-Subclassing is also supported through the static `.extend()` method:
-
-    var ExtendedErratum = Erratum.extend();
-    
-    var err = new ExtendedErratum({statusCode: 500}, 'The answer is: %s', 42);
-        
-    err instanceof Error                   // true
-    err instanceof Erratum                 // true
-    err instanceof ExtendedErratum         // true
-    err.statusCode === 500                 // true
-    err.message === 'This answer is: 42';  // true
+err instanceof Error                   // true
+err instanceof Erratum                 // true
+err instanceof ExtendedErratum         // true
+err.statusCode === 500                 // true
+err.message === 'This answer is: 42';  // true
+```
 
 ### Error wrapping
 
-If `data` is an instance of `Error` or has either the `err` property or the `error` property set to an instance of `Error`, the stack of the new error returned by `Erratum()` will incorporate the stack of the provided error. The latter will be available at `Erratum#wrapperError`.
- 
-```
-> var someError = new Error('Something went wrong.');
-> throw new Erratum({err: someError}, 'Yes, something definitely went wrong.');
+If `data` is an instance of `Error` or has either the `err` property or the `error` property set to an instance of `Error`, the stack of the new `Erratum` instance will incorporate the stack of the provided error. The latter will be available through the `wrappedError` property. 
 
+```js
+const err = new Error('Something went wrong.');
+throw new Erratum({err}, 'Yes, something definitely went wrong.');
+```
+
+```
 Erratum: Yes, something definitely went wrong.
     at repl:1:7
     at REPLServer.defaultEval (repl.js:262:27)
@@ -94,33 +81,28 @@ Caused By: Error: Something went wrong.
 
 ### Assertions
 
-The Erratum class and all of its child classes support simple assertions through `Erratum.assert()`.
+`Erratum` and all of its child classes support simple assertions through `Erratum.assert()`.
 
-The following line
-
-```
-Erratum.assert(check(), {statusCode: 500}, 'The answer is: %s', 42);
-```
-
-is equivalent to
-
-```
-if (!check()) {
-    throw new Erratum({statusCode: 500}, 'The answer is: %s', 42);
-}
+```js
+Erratum.assert(check(), {statusCode: 500}, 'The answer is: 42');
 ```
 
 Breaking changes
 ----------------
 
-Erratum has been rewritten with the `1.x` release, extending the native `Error` class to better support error specialization.  
-
-While the basic `erratum()` API remains unchanged, versions `1.x` do not have the `erratum.wrap` feature anymore.
+- **2.x.x**
+  - Partial rewrite to update the code to ES6
+  - Dropped message formatting in favour of ES6' templates
+  - Dropped `Erratum.extend()` in favour of ES6' classes
+  - Dropped using the constructor as a factory function (i.e. instantiating without `new`)
+- **1.x.x**
+  - Complete rewrite, extends the native `Error` class to better support error specialization
+  - Dropped `Erratum.wrap()`
     
 Test
 ----
 
-    $ mocha
+    $ npm test
     
 License
 -------
