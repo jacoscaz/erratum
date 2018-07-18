@@ -28,21 +28,22 @@ class Erratum extends Error {
 
     if (isObject(data)) {
       
-      data = isError(data) 
-        ? {wrappedError: data} 
-        : {...data};
+      if (isError(data)) {
+        this.wrappedError = data;
+      } else {
+        Object.assign(this, data);
+      }
 
-      if (isError(data.err)) {
-        data.wrappedError = data.err;
-        delete data.err;
+      if (isError(this.err)) {
+        this.wrappedError = this.err;
+        delete this.err;
       } 
 
-      if (isError(data.error)) {
-        data.wrappedError = data.error;
-        delete data.error;
+      if (isError(this.error)) {
+        this.wrappedError = this.error;
+        delete this.error;
       }
       
-      Object.assign(this, data);
     }
 
     this.name = this.constructor.name;
@@ -50,7 +51,7 @@ class Erratum extends Error {
 
     Error.captureStackTrace(this, this.constructor);
 
-    if (this.wrappedError instanceof Error) {
+    if (isError(this.wrappedError)) {
       this.stack += '\nCaused By: ' + this.wrappedError.stack;
     }
 
