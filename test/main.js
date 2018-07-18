@@ -53,7 +53,7 @@ describe('Erratum', function() {
     error.name.should.equal(ExtendedErratum.name);
   });
 
-  it('should support simple assertions through Erratum.assert()', function () {
+  it('should support simple assertions', function () {
     var data = {num: 17, obj: {}};
     try {
       Erratum.assert(false, data, 'Answer: 42');
@@ -67,7 +67,7 @@ describe('Erratum', function() {
     throw new Error('Should not be here.');
   });
 
-  it('should support simple assertions in subclasses Subclass.assert()', function () {
+  it('should support simple assertions in subclasses', function () {
     class ExtendedErratum extends Erratum {};
     var data = {num: 17, obj: {}};
     try {
