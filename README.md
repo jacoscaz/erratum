@@ -47,6 +47,28 @@ err.statusCode === 500                 // true
 err.message === 'This answer is: 42';  // true
 ```
 
+### Default values
+
+Classes extending `Erratum` can specify default values to be set on their instances and optionally overridden through the `data` argument.
+
+```js
+class ExtendedErratum extends Erratum {
+    static get defaults() {
+        return {
+            ...super.defaults,
+            hello: 'world',
+            statusCode: 500
+        }
+    }
+};
+
+const err = new ExtendedErratum({statusCode: 400}, 'The answer is: 42');
+
+err.hello === 'world'                  // true
+err.statusCode === 500                 // false
+err.statusCode === 400                 // true
+```
+
 ### Error wrapping
 
 If `data` is an instance of `Error` or has either the `err` property or the `error` property set to an instance of `Error`, the stack of the new `Erratum` instance will incorporate the stack of the provided error. The latter will be available through the `wrappedError` property. 

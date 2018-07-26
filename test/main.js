@@ -5,12 +5,8 @@ var Erratum = require('../');
 
 describe('Erratum', function() {
 
-  it('should instantiate correctly when used as a function', function () {
+  it('should instantiate correctly', function () {
     new Erratum('Answer: 42').should.be.instanceof(Erratum);
-  });
-
-  it('should instantiate when used as a constructor', function () {
-    (new Erratum('Answer: 42')).should.be.instanceof(Erratum);
   });
 
   it('should produce instances that are also instances of the Error class', function() {
@@ -80,6 +76,32 @@ describe('Erratum', function() {
       return;
     }
     throw new Error('Should not be here.');
+  });
+
+  it('Should support default values', function () {
+    class ExtendedErratum extends Erratum {
+      static get defaults() {
+        return {
+          ...super.defaults,
+          answer: 42
+        };
+      }
+    }
+    var err = new ExtendedErratum('Some message');
+    err.answer.should.equal(42);
+  });
+
+  it('Should support overriding default values', function () {
+    class ExtendedErratum extends Erratum {
+      static get defaults() {
+        return {
+          ...super.defaults,
+          answer: 42
+        };
+      }
+    }
+    var err = new ExtendedErratum({answer: 17}, 'Some message');
+    err.answer.should.equal(17);
   });
 
 });
