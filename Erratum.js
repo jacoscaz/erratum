@@ -26,35 +26,52 @@ class Erratum extends Error {
 
     Object.assign(this, this.constructor.defaults);
 
+    let wrappedError;
+
     if (isObject(data)) {
-      
       if (isError(data)) {
-        this.wrappedError = data;
+        wrappedError = data;
       } else {
         Object.assign(this, data);
-      }
-
-      if (isError(this.err)) {
-        this.wrappedError = this.err;
-        delete this.err;
+        if (isError(this.err)) {
+          wrappedError = this.err;
+          delete this.err;
+        }
+        if (isError(this.error)) {
+          wrappedError = this.error;
+          delete this.error;
+        }
       } 
-
-      if (isError(this.error)) {
-        this.wrappedError = this.error;
-        delete this.error;
-      }
-      
     }
 
-    this.name = this.constructor.name;
-    this.message = message;
+    Object.defineProperty(this, 'name', {
+      enumerable: false,
+      value: this.constructor.name
+    });
+
+    Object.defineProperty(this, 'message', {
+      enumerable: false,
+      value: message
+    });
 
     Error.captureStackTrace(this, this.constructor);
 
-    if (isError(this.wrappedError)) {
-      this.stack += '\nCaused By: ' + this.wrappedError.stack;
+    if (isError(wrappedError)) {
+      Object.defineProperty(this, 'wrappedError', {
+        enumerable: false,
+        value: wrappedError
+      })
+      this.stack += '\nCaused By: ' + wrappedError.stack;
     }
 
+  }
+
+  toString() {
+    return `${this.name}: ${this.message}`;
+  }
+  
+  toJSON() {
+    return {...this, message: this.message, name: this.name};
   }
 
   static get defaults() {
