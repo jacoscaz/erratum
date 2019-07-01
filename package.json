@@ -1,6 +1,6 @@
 {
   "name": "erratum",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "An extension of the native Error class that adds support for additional properties, simple assertions and can be extended as any other ES6 class.",
   "keywords": [
     "error",
@@ -12,6 +12,7 @@
     "default"
   ],
   "main": "Erratum.js",
+  "types": "Erratum.d.ts",
   "scripts": {
     "test": "mocha"
   },
